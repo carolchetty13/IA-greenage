@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Pulse visualizer indicator for visually impaired feedback */
+        .voice-status-indicator {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #2563eb;
+            color: #ffffff;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .voice-status-indicator.listening {
+            background-color: #16a34a;
+            animation: continuousPulse 1.5s infinite;
+        }
+
+        .voice-status-indicator.speaking {
+            background-color: #d97706;
+        }
+
+        @keyframes continuousPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+            70% { transform: scale(1.15); box-shadow: 0 0 0 18px rgba(22, 163, 74, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="menu" onclick="window.location.href='/profile'">
+                ☰
+              <i class="fa-solid back-icon"></i>
+            </div>
+
+            <div class="welcome">
+                <h1>Hello, User 👋</h1>
+                <p>How can we assist you today?</p>
+            </div>
+
+            <div class="notification">🔔</div>
+        </header>
+
+
+        <!-- Main Cards -->
+        <main class="cards">
+
+            <!-- Smart Navigation -->
+            <a href="/Snavigation" class="card navigation">
+                <div class="icon person">🚶</div>
+                <div class="card-text">
+                    <h2>Navigation</h2>
+                    <p>Navigate safely</p>
+                </div>
+            </a>
+
+
+            <!-- Document Read -->
+            <a href="/documentS" class="card summarization">
+                <div class="icon">📄</div>
+                <div class="card-text">
+                    <h2>Document<br>Read</h2>
+                    <p>Read &amp; listen</p>
+                </div>
+            </a>
+
+
+            <!-- Emergency SOS -->
+            <a href="/sos" class="card emergency">
+                <div class="sos">SOS</div>
+                <div class="card-text">
+                    <h2>Emergency<br>SOS</h2>
+                    <p>Get help in emergency</p>
+                </div>
+            </a>
+
+        </main>
+
+    </div>
+
+    <!-- Hands-Free Status Indicator -->
+    <div id="statusIndicator" class="voice-status-indicator" title="Voice Assistant Status">🎙️</div>
+
+    <script src="/js/common.js"></script>
+    <!-- Universal Voice Assistant Script -->
+    <script src="/js/global-voice.js"></script>
+</body>
+
+</html>

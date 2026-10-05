@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Green Edge AI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            color: #222;
+        }
+
+        /* ==============================
+           HEADER
+        ============================== */
+
+        .header {
+            background: #ffffff;
+            padding: 18px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: #eef2f3;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #dce4e6;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f7a5c;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* ==============================
+           MAIN CONTAINER
+        ============================== */
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 30px auto;
+        }
+
+        .page-title {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        /* ==============================
+           SETTINGS CARD
+        ============================== */
+
+        .settings-card {
+            background: #ffffff;
+            border-radius: 15px;
+            margin-bottom: 22px;
+            padding: 24px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        }
+
+        .section-title {
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #1f7a5c;
+        }
+
+        /* ==============================
+           SETTING ROW
+        ============================== */
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 18px 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .setting-description {
+            font-size: 13px;
+            color: #777;
+            line-height: 1.5;
+        }
+
+        /* ==============================
+           TOGGLE
+        ============================== */
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #ccc;
+            transition: 0.3s;
+            border-radius: 30px;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: #1f7a5c;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* ==============================
+           SELECT
+        ============================== */
+
+        .setting-select {
+            width: 180px;
+            padding: 10px 12px;
+            border: 1px solid #d5d5d5;
+            border-radius: 8px;
+            background: #ffffff;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .setting-select:focus {
+            border-color: #1f7a5c;
+        }
+
+        /* ==============================
+           VOLUME SLIDER
+        ============================== */
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 220px;
+        }
+
+        #voiceVolumeSlider {
+            width: 160px;
+            cursor: pointer;
+        }
+
+        #voiceVolumeValue {
+            min-width: 45px;
+            font-weight: 600;
+            color: #1f7a5c;
+        }
+
+        /* ==============================
+           VOICE STATUS INDICATOR
+        ============================== */
+
+        .voice-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #eef8f4;
+            border: 1px solid #bce3d4;
+            padding: 12px 18px;
+            border-radius: 10px;
+            color: #1f7a5c;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .mic-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        .mic-dot.error {
+            background-color: #ef4444;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        /* ==============================
+           NAVIGATION BUTTONS
+        ============================== */
+
+        .navigation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .navigation-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #f1f5f4;
+            text-align: left;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .navigation-button:hover {
+            background: #e2ebe8;
+        }
+
+        /* ==============================
+           ABOUT
+        ============================== */
+
+        .about-text {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .version {
+            margin-top: 12px;
+            color: #999;
+            font-size: 13px;
+        }
+
+        /* ==============================
+           LOGOUT
+        ============================== */
+
+        .logout-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #fce8e8;
+            color: #c62828;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background: #f8d7d7;
+        }
+
+        /* ==============================
+           SAVE MESSAGE
+        ============================== */
+
+        .save-message {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #1f7a5c;
+            color: white;
+            padding: 13px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(15px);
+            transition: 0.3s;
+            z-index: 2000;
+        }
+
+        .save-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (max-width: 650px) {
+
+            .header {
+                padding: 15px;
+            }
+
+            .container {
+                width: 94%;
+                margin: 20px auto;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .setting-row {
+                align-items: flex-start;
+            }
+
+            .setting-select {
+                width: 140px;
+            }
+
+            .volume-container {
+                min-width: auto;
+                flex-direction: column;
+                align-items: flex-end;
+            }
+
+            #voiceVolumeSlider {
+                width: 130px;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <header class="header">
+
+        <div class="header-left">
+
+            <button
+                class="back-btn"
+                id="backBtn"
+                onclick="window.location.href='/home'"
+                aria-label="Go back">
+                ←
+            </button>
+
+            <div class="logo">
+                Green Edge AI
+            </div>
+
+        </div>
+
+        <div class="header-title">
+            Settings
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <main class="container">
+
+        <h1 class="page-title">
+            Settings
+        </h1>
+
+        <p class="page-subtitle">
+            Customize your Green Edge AI experience.
+        </p>
+
+        <!-- VOICE CONTROL INDICATOR STATUS -->
+        <div class="voice-status" id="voiceStatusContainer">
+            <span class="mic-dot" id="micDot"></span>
+            <span id="voiceStatusText">Voice Assistant: Click here to activate listening...</span>
+        </div>
+
+
+        <!-- =========================================
+             VOICE & AUDIO
+        ========================================== -->
+
+        <section class="settings-card">
+
+            <h2 class="section-title">
+                Voice & Audio
+            </h2>
+
+
+            <!-- VOICE GUIDANCE -->
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <label for="voiceGuidanceToggle" class="setting-name" style="display: block; cursor: pointer;">
+                        Voice Guidance
+                    </label>
+
+                    <div class="setting-description">
+                        Enable voice guidance for navigation and assistance.
+                    </div>
+
+                </div>
+
+                <label class="switch" aria-label="Voice Guidance Toggle">
+
+                    <input
+                        type="checkbox"
+                        id="voiceGuidanceToggle"
+                        checked>
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <!-- VOICE TYPE -->
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <label for="voiceTypeSelect" class="setting-name" style="display: block; cursor: pointer;">
+                        Voice Type
+                    </label>
+
+                    <div class="setting-description">
+                        Choose the preferred voice type.
+                    </div>
+
+                </div>
+
+                <select
+                    id="voiceTypeSelect"
+                    class="setting-select"
+                    aria-label="Voice Type">
+
+                    <option value="female">
+                        Female
+                    </option>
+
+                    <option value="male">
+                        Male
+                    </option>
+
+                    <option value="default">
+                        Default
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- SPEECH RATE -->
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <label for="speechRateSelect" class="setting-name" style="display: block; cursor: pointer;">
+                        Speech Rate
+                    </label>
+
+                    <div class="setting-description">
+                        Adjust how quickly voice guidance speaks.
+                    </div>
+
+                </div>
+
+                <select
+                    id="speechRateSelect"
+                    class="setting-select"
+                    aria-label="Speech Rate">
+
+                    <option value="slow">
+                        Slow
+                    </option>
+
+                    <option value="normal" selected>
+                        Normal
+                    </option>
+
+                    <option value="fast">
+                        Fast
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- VOLUME -->
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <label for="voiceVolumeSlider" class="setting-name" style="display: block; cursor: pointer;">
+                        Volume
+                    </label>
+
+                    <div class="setting-description">
+                        Adjust the voice guidance volume.
+                    </div>
+
+                </div>
+
+                <div class="volume-container">
+
+                    <input
+                        type="range"
+                        id="voiceVolumeSlider"
+                        min="0"
+                        max="100"
+                        value="70"
+                        aria-label="Volume Level">
+
+                    <span id="voiceVolumeValue" aria-live="polite">
+                        70%
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- HAPTIC FEEDBACK -->
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <label for="hapticFeedbackToggle" class="setting-name" style="display: block; cursor: pointer;">
+                        Haptic Feedback
+                    </label>
+
+                    <div class="setting-description">
+                        Use vibration feedback for important actions and notifications.
+                    </div>
+
+                </div>
+
+                <label class="switch" aria-label="Haptic Feedback Toggle">
+
+                    <input
+                        type="checkbox"
+                        id="hapticFeedbackToggle"
+                        checked>
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             NAVIGATION
+        ========================================== -->
+
+        <section class="settings-card">
+
+            <h2 class="section-title">
+                Navigation
+            </h2>
+
+            <div class="navigation-list">
+
+                <button
+                    class="navigation-button"
+                    onclick="window.location.href='/navigate'">
+                    🧭 Navigation
+                </button>
+
+                <button
+                    class="navigation-button"
+                    onclick="window.location.href='/Snavigation'">
+                    🗺️ Safe Navigation
+                </button>
+
+                <button
+                    class="navigation-button"
+                    onclick="window.location.href='/sos'">
+                    🆘 Emergency SOS
+                </button>
+
+                <button
+                    class="navigation-button"
+                    onclick="window.location.href='/documentS'">
+                    📝 Document Summary
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             GENERAL
+        ========================================== -->
+
+        <section class="settings-card">
+
+            <h2 class="section-title">
+                General
+            </h2>
+
+            <div class="navigation-list">
+
+                <button
+                    class="navigation-button"
+                    onclick="window.location.href='/profile'">
+                    👤 Profile
+                </button>
+
+                <button
+                    class="navigation-button"
+                    onclick="window.location.href='/home'">
+                    🏠 Home
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             ABOUT & SUPPORT
+        ========================================== -->
+
+        <section class="settings-card">
+
+            <h2 class="section-title">
+                About & Support
+            </h2>
+
+            <p class="about-text">
+                Green Edge AI is an intelligent environment perception application designed to assist visually impaired users with navigation, document understanding, voice assistance and emergency support.
+            </p>
+
+            <p class="version">
+                Green Edge AI • Version 1.0
+            </p>
+
+        </section>
+
+
+        <!-- =========================================
+             LOGOUT
+        ========================================== -->
+
+        <section class="settings-card">
+
+            <button
+                class="logout-button"
+                id="logoutButton">
+                Logout
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         SAVE MESSAGE
+    ========================================== -->
+
+    <div
+        class="save-message"
+        id="saveMessage"
+        role="status"
+        aria-live="polite">
+        Settings saved ✓
+    </div>
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
+
+    <script>
+        // =========================================
+        // GET HTML ELEMENTS
+        // =========================================
+        const voiceGuidanceToggle = document.getElementById("voiceGuidanceToggle");
+        const voiceTypeSelect = document.getElementById("voiceTypeSelect");
+        const speechRateSelect = document.getElementById("speechRateSelect");
+        const voiceVolumeSlider = document.getElementById("voiceVolumeSlider");
+        const voiceVolumeValue = document.getElementById("voiceVolumeValue");
+        const hapticFeedbackToggle = document.getElementById("hapticFeedbackToggle");
+        const saveMessage = document.getElementById("saveMessage");
+        const voiceStatusText = document.getElementById("voiceStatusText");
+        const micDot = document.getElementById("micDot");
+        const voiceStatusContainer = document.getElementById("voiceStatusContainer");
+
+        let recognition = null;
+        let isListening = false;
+
+
+        // =========================================
+        // SHOW SAVE MESSAGE
+        // =========================================
+        function showSaveMessage() {
+            saveMessage.classList.add("show");
+            setTimeout(function() {
+                saveMessage.classList.remove("show");
+            }, 1500);
+        }
+
+
+        // =========================================
+        // TEXT-TO-SPEECH VOICE FEEDBACK
+        // =========================================
+        function speakFeedback(text) {
+            if (!voiceGuidanceToggle.checked || !('speechSynthesis' in window)) return;
+            
+            window.speechSynthesis.cancel(); // Cancel any ongoing speech
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Set rate based on dropdown selection
+            if (speechRateSelect.value === 'slow') utterance.rate = 0.8;
+            else if (speechRateSelect.value === 'fast') utterance.rate = 1.3;
+            else utterance.rate = 1.0;
+
+            // Set volume level
+            utterance.volume = Number(voiceVolumeSlider.value) / 100;
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+
+        // =========================================
+        // LOAD SETTINGS FROM BACKEND
+        // =========================================
+        async function loadVoiceSettings() {
+            try {
+                const response = await fetch("/api/voice-settings");
+                const data = await response.json();
+
+                if (!data.success) {
+                    console.error("Unable to load voice settings.");
+                    return;
+                }
+
+                const settings = data.settings;
+                voiceGuidanceToggle.checked = settings.voiceGuidance !== undefined ? settings.voiceGuidance : true;
+                voiceTypeSelect.value = settings.voiceType || "female";
+                
+                if (typeof settings.speechRate === "number") {
+                    if (settings.speechRate <= 0.8) speechRateSelect.value = "slow";
+                    else if (settings.speechRate >= 1.2) speechRateSelect.value = "fast";
+                    else speechRateSelect.value = "normal";
+                } else {
+                    speechRateSelect.value = settings.speechRate || "normal";
+                }
+
+                voiceVolumeSlider.value = settings.volume !== undefined ? settings.volume : 70;
+                voiceVolumeValue.innerText = voiceVolumeSlider.value + "%";
+                hapticFeedbackToggle.checked = settings.hapticFeedback !== undefined ? settings.hapticFeedback : true;
+
+                console.log("✅ Voice settings loaded from backend.");
+            } catch (error) {
+                console.error("❌ Error loading voice settings:", error);
+            }
+        }
+
+
+        // =========================================
+        // SAVE SETTINGS TO BACKEND
+        // =========================================
+        async function saveVoiceSettings(spokenFeedbackText) {
+            const settings = {
+                voiceGuidance: voiceGuidanceToggle.checked,
+                voiceType: voiceTypeSelect.value,
+                speechRate: speechRateSelect.value,
+                volume: Number(voiceVolumeSlider.value),
+                hapticFeedback: hapticFeedbackToggle.checked
+            };
+
+            try {
+                const response = await fetch("/api/voice-settings", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(settings)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    console.log("✅ Voice settings saved to backend.");
+                    showSaveMessage();
+                    if (spokenFeedbackText) {
+                        speakFeedback(spokenFeedbackText);
+                    }
+                } else {
+                    console.error("❌ Settings were not saved.");
+                }
+            } catch (error) {
+                console.error("❌ Backend error:", error);
+            }
+        }
+
+
+        // =========================================
+        // VOICE COMMAND LISTENER (WEB SPEECH API)
+        // =========================================
+        function initVoiceAssistant() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                if (voiceStatusText) voiceStatusText.innerText = "Voice Assistant: Not supported on this browser (Use Chrome or Edge).";
+                if (micDot) micDot.classList.add("error");
+                return;
+            }
+
+            if (recognition) {
+                try { recognition.stop(); } catch(e) {}
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                isListening = true;
+                console.log("🎤 Voice assistant active and listening...");
+                if (voiceStatusText) voiceStatusText.innerText = "Voice Assistant: Active and listening...";
+                if (micDot) micDot.classList.remove("error");
+            };
+
+            recognition.onerror = (event) => {
+                console.warn("Speech recognition error:", event.error);
+                if (event.error === "not-allowed") {
+                    if (voiceStatusText) voiceStatusText.innerText = "Voice Assistant: Mic blocked. Click browser padlock to allow microphone.";
+                    if (micDot) micDot.classList.add("error");
+                    isListening = false;
+                } else if (event.error === "network") {
+                    if (voiceStatusText) voiceStatusText.innerText = "Voice Assistant: Network error (Speech engine offline).";
+                    if (micDot) micDot.classList.add("error");
+                }
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                // Safely restart if stopped by timeout
+                setTimeout(() => {
+                    if (!isListening) {
+                        startListening();
+                    }
+                }, 400);
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+                console.log("🗣️ Spoken Command:", transcript);
+                if (voiceStatusText) voiceStatusText.innerText = `Heard: "${transcript}"`;
+
+                let updated = false;
+                let feedbackText = "";
+
+                // Voice Type Commands
+                if (transcript.includes("male") && !transcript.includes("female")) {
+                    voiceTypeSelect.value = "male";
+                    feedbackText = "Voice type set to male";
+                    updated = true;
+                } else if (transcript.includes("female")) {
+                    voiceTypeSelect.value = "female";
+                    feedbackText = "Voice type set to female";
+                    updated = true;
+                } else if (transcript.includes("default voice")) {
+                    voiceTypeSelect.value = "default";
+                    feedbackText = "Voice type set to default";
+                    updated = true;
+                }
+
+                // Speech Rate Commands
+                if (transcript.includes("fast") || transcript.includes("speak faster")) {
+                    speechRateSelect.value = "fast";
+                    feedbackText = "Speech rate set to fast";
+                    updated = true;
+                } else if (transcript.includes("slow") || transcript.includes("speak slower")) {
+                    speechRateSelect.value = "slow";
+                    feedbackText = "Speech rate set to slow";
+                    updated = true;
+                } else if (transcript.includes("normal speed") || transcript.includes("normal rate")) {
+                    speechRateSelect.value = "normal";
+                    feedbackText = "Speech rate set to normal";
+                    updated = true;
+                }
+
+                // Volume Commands (e.g. "set volume to 80" or "volume 50")
+                const volumeMatch = transcript.match(/volume (?:to )?(\d+)/);
+                if (volumeMatch) {
+                    const newVol = Math.min(100, Math.max(0, parseInt(volumeMatch[1])));
+                    voiceVolumeSlider.value = newVol;
+                    voiceVolumeValue.innerText = newVol + "%";
+                    feedbackText = `Volume set to ${newVol} percent`;
+                    updated = true;
+                }
+
+                // Enable / Disable Voice Guidance
+                if (transcript.includes("disable voice") || transcript.includes("turn off voice")) {
+                    voiceGuidanceToggle.checked = false;
+                    feedbackText = "Voice guidance disabled";
+                    updated = true;
+                } else if (transcript.includes("enable voice") || transcript.includes("turn on voice")) {
+                    voiceGuidanceToggle.checked = true;
+                    feedbackText = "Voice guidance enabled";
+                    updated = true;
+                }
+
+                // Page Navigation Voice Commands
+                if (transcript.includes("go home") || transcript.includes("open home") || transcript.includes("go back")) {
+                    speakFeedback("Navigating to Home");
+                    window.location.href = '/home';
+                    return;
+                } else if (transcript.includes("open profile") || transcript.includes("go to profile")) {
+                    speakFeedback("Navigating to Profile");
+                    window.location.href = '/profile';
+                    return;
+                } else if (transcript.includes("open sos") || transcript.includes("emergency")) {
+                    speakFeedback("Opening SOS emergency page");
+                    window.location.href = '/sos';
+                    return;
+                } else if (transcript.includes("open navigation") || transcript.includes("start navigation")) {
+                    speakFeedback("Opening Navigation");
+                    window.location.href = '/Snavigation';
+                    return;
+                }
+
+                if (updated) {
+                    saveVoiceSettings(feedbackText);
+                }
+            };
+
+            startListening();
+        }
+
+        function startListening() {
+            if (recognition && !isListening) {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    // Engine already listening or starting
+                }
+            }
+        }
+
+
+        // Event Listeners for Manual UI Changes
+        voiceGuidanceToggle.addEventListener("change", () => saveVoiceSettings("Voice guidance updated"));
+        voiceTypeSelect.addEventListener("change", () => saveVoiceSettings(`Voice type set to ${voiceTypeSelect.value}`));
+        speechRateSelect.addEventListener("change", () => saveVoiceSettings(`Speech rate set to ${speechRateSelect.value}`));
+
+        voiceVolumeSlider.addEventListener("input", function() {
+            voiceVolumeValue.innerText = voiceVolumeSlider.value + "%";
+        });
+        voiceVolumeSlider.addEventListener("change", () => saveVoiceSettings(`Volume set to ${voiceVolumeSlider.value} percent`));
+
+        hapticFeedbackToggle.addEventListener("change", function() {
+            saveVoiceSettings("Haptic feedback updated");
+            if (hapticFeedbackToggle.checked && navigator.vibrate) {
+                navigator.vibrate(80);
+            }
+        });
+
+        document.getElementById("logoutButton").addEventListener("click", function() {
+            if (confirm("Are you sure you want to logout?")) {
+                window.location.href = "/login";
+            }
+        });
+
+        // Click status bar or anywhere to wake up listening if blocked
+        voiceStatusContainer.addEventListener("click", () => {
+            startListening();
+        });
+
+        window.onload = function() {
+            loadVoiceSettings();
+            initVoiceAssistant();
+        };
+    </script>
+
+</body>
+
+</html>

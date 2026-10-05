@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Document Read Screen</title>
+
+
+    <!-- FontAwesome Icons -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <!-- Google Fonts -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+
+    <!-- Main CSS -->
+
+    <link
+        rel="stylesheet"
+        href="/css/style.css">
+
+
+    <!-- ==========================================
+         CAMERA & VOICE STYLING
+         ========================================== -->
+
+    <style>
+
+        /* ==========================================
+           DOCUMENT INPUT SECTION
+           ========================================== */
+
+        .document-input-section {
+
+            width: 100%;
+
+            margin-top: 20px;
+
+        }
+
+
+        .document-input-title {
+
+            font-size: 20px;
+
+            font-weight: 600;
+
+            margin-bottom: 16px;
+
+            color: #111827;
+
+        }
+
+
+        /* ==========================================
+           CAMERA / GALLERY BUTTONS
+           ========================================== */
+
+        .document-input-tabs {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 16px;
+
+            width: 100%;
+
+        }
+
+
+        .document-tab {
+
+            width: 100%;
+
+            min-height: 155px;
+
+            background: #ffffff;
+
+            border: 1px solid #e1e5e8;
+
+            border-radius: 22px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 15px;
+
+            cursor: pointer;
+
+            font-family: 'Inter', sans-serif;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.06);
+
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease;
+
+        }
+
+
+        .document-tab:hover {
+
+            box-shadow:
+                0 5px 14px rgba(0, 0, 0, 0.10);
+
+        }
+
+
+        .document-tab:active {
+
+            transform: scale(0.98);
+
+        }
+
+
+        /* ==========================================
+           CAMERA / GALLERY ICON
+           ========================================== */
+
+        .document-tab i {
+
+            font-size: 42px;
+
+            color: #1a5632;
+
+        }
+
+
+        /* ==========================================
+           BUTTON TEXT
+           ========================================== */
+
+        .document-tab span {
+
+            font-size: 18px;
+
+            font-weight: 600;
+
+            color: #111827;
+
+        }
+
+
+        /* ==========================================
+           CAMERA PREVIEW
+           ========================================== */
+
+        #cameraPreview {
+
+            display: none;
+
+            width: 100%;
+
+            max-width: 450px;
+
+            aspect-ratio: 4 / 3;
+
+            object-fit: cover;
+
+            margin: 18px auto 0 auto;
+
+            border-radius: 18px;
+
+            background: #000000;
+
+        }
+
+
+        /* ==========================================
+           CAPTURE BUTTON
+           ========================================== */
+
+        #captureBtn {
+
+            display: none;
+
+            width: 100%;
+
+            margin-top: 12px;
+
+        }
+
+
+        /* ==========================================
+           CAMERA STATUS
+           ========================================== */
+
+        #summaryStatus {
+
+            margin-top: 12px;
+
+            text-align: center;
+
+            font-size: 14px;
+
+            color: #185d35;
+
+        }
+
+
+        /* ==========================================
+           CAMERA CONTAINER
+           ========================================== */
+
+        .camera-container {
+
+            width: 100%;
+
+        }
+
+
+        /* ==========================================
+           VOICE FLOATING INDICATOR
+           ========================================== */
+
+        .voice-status-indicator {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #2563eb;
+            color: #ffffff;
+            border-radius: 50%;
+            width: 65px;
+            height: 65px;
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            cursor: pointer;
+            border: none;
+        }
+
+        .voice-status-indicator.listening {
+            background-color: #16a34a;
+            animation: continuousPulse 1.5s infinite;
+        }
+
+        .voice-status-indicator.speaking {
+            background-color: #d97706;
+        }
+
+        @keyframes continuousPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+            70% { transform: scale(1.15); box-shadow: 0 0 0 18px rgba(22, 163, 74, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+        }
+
+
+        /* ==========================================
+           MOBILE
+           ========================================== */
+
+        @media (max-width: 480px) {
+
+            .document-tab {
+
+                min-height: 145px;
+
+            }
+
+            .document-tab i {
+
+                font-size: 38px;
+
+            }
+
+            .document-tab span {
+
+                font-size: 17px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <h1 class="screen-title"></h1>
+
+
+    <div class="phone-container">
+
+
+        <!-- ================================= -->
+        <!-- HEADER -->
+        <!-- ================================= -->
+
+        <header class="app-header">
+
+            <i
+                class="fa-solid fa-chevron-left back-icon"
+                id="backBtn"
+                onclick="window.location.href='/home'"
+                style="cursor: pointer;">
+            </i>
+
+
+            <h2>
+                Document Read
+            </h2>
+
+        </header>
+
+
+
+        <!-- ================================= -->
+        <!-- MAIN CONTENT -->
+        <!-- ================================= -->
+
+        <main class="app-content">
+
+
+            <!-- ================================= -->
+            <!-- DOCUMENT INPUT / CAMERA SECTION -->
+            <!-- ================================= -->
+
+            <div class="document-input-section">
+
+
+                <h3 class="document-input-title">
+                    Add Document
+                </h3>
+
+
+
+                <!-- CAMERA + GALLERY BUTTONS -->
+
+                <div class="document-input-tabs">
+
+
+                    <!-- CAMERA -->
+
+                    <button
+                        class="document-tab"
+                        id="summaryCameraBtn"
+                        type="button">
+
+                        <i
+                            class="fa-solid fa-camera">
+                        </i>
+
+
+                        <span>
+                            Scan Document
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- GALLERY -->
+
+                    <button
+                        class="document-tab"
+                        id="summaryGalleryBtn"
+                        type="button">
+
+                        <i
+                            class="fa-solid fa-image">
+                        </i>
+
+
+                        <span>
+                            Upload from Gallery
+                        </span>
+
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- ================================= -->
+                <!-- HIDDEN CAMERA INPUT -->
+                <!-- ================================= -->
+
+                <input
+                    type="file"
+                    id="summaryCameraInput"
+                    accept="image/*"
+                    capture="environment"
+                    hidden>
+
+
+
+                <!-- ================================= -->
+                <!-- HIDDEN GALLERY INPUT -->
+                <!-- ================================= -->
+
+                <input
+                    type="file"
+                    id="summaryGalleryInput"
+                    accept="image/*"
+                    hidden>
+
+
+
+                <!-- ================================= -->
+                <!-- LIVE CAMERA -->
+                <!-- ================================= -->
+
+                <div class="camera-container">
+
+
+                    <video
+                        id="cameraPreview"
+                        autoplay
+                        playsinline>
+                    </video>
+
+
+
+                    <!-- CAPTURE PHOTO -->
+
+                    <button
+                        class="primary-btn"
+                        id="captureBtn"
+                        type="button">
+
+                        <i
+                            class="fa-solid fa-camera">
+                        </i>
+
+
+                        <span>
+                            Capture Photo
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- CAMERA STATUS -->
+
+                    <p id="summaryStatus"></p>
+
+
+                </div>
+
+
+
+                <!-- ================================= -->
+                <!-- CAMERA CANVAS -->
+                <!-- ================================= -->
+
+                <canvas
+                    id="cameraCanvas"
+                    style="display:none;">
+                </canvas>
+
+
+            </div>
+
+
+
+            <!-- ================================= -->
+            <!-- EXTRACTED TEXT -->
+            <!-- ================================= -->
+
+            <div class="summary-section">
+
+
+                <h3 class="section-title">
+                    Extracted Text
+                </h3>
+
+
+                <div class="summary-box">
+
+
+                    <p id="extractedSummaryText">
+
+                        Scan or upload a document
+                        to extract text.
+
+                    </p>
+
+                    <i
+                        class="fa-solid fa-volume-high speaker-icon"
+                        id="extractedSpeakerBtn"
+                        title="Listen Extracted Text"
+                        style="cursor: pointer; margin-top: 10px; display: inline-block;">
+                    </i>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ================================= -->
+            <!-- AI SUMMARY -->
+            <!-- ================================= -->
+
+            <div class="summary-section">
+
+
+                <h3 class="section-title">
+
+                    AI Summary
+
+                </h3>
+
+
+
+                <div class="summary-box">
+
+
+                    <p id="summaryText">
+
+                        Green Edge AI helps visually
+                        impaired users by providing
+                        safe navigation, obstacle
+                        detection, voice guidance,
+                        and document reading using
+                        artificial intelligence.
+
+                    </p>
+
+
+
+                    <i
+                        class="fa-solid fa-volume-high speaker-icon"
+                        id="boxSpeakerBtn"
+                        title="Listen Summary"
+                        style="cursor: pointer; margin-top: 10px; display: inline-block;">
+                    </i>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ================================= -->
+            <!-- LANGUAGE SELECTION -->
+            <!-- ================================= -->
+
+            <div class="language-section">
+
+
+                <label
+                    for="languageSelect"
+                    class="section-title">
+
+                    Language
+
+                </label>
+
+
+
+                <div class="select-wrapper">
+
+
+                    <select id="languageSelect">
+
+
+                        <option value="en-US">
+                            English
+                        </option>
+
+
+                        <option value="es-ES">
+                            Spanish
+                        </option>
+
+
+                        <option value="fr-FR">
+                            French
+                        </option>
+
+
+                        <option value="hi-IN">
+                            Hindi
+                        </option>
+
+
+                        <option value="de-DE">
+                            German
+                        </option>
+
+
+                    </select>
+
+
+
+                    <i
+                        class="fa-solid fa-chevron-down select-arrow">
+                    </i>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ================================= -->
+            <!-- LISTEN SUMMARY -->
+            <!-- ================================= -->
+
+            <button
+                class="primary-btn"
+                id="listenBtn"
+                type="button">
+
+
+                <i
+                    class="fa-solid fa-volume-high"
+                    id="listenIcon">
+                </i>
+
+
+                <span id="listenBtnText">
+
+                    Listen Summary
+
+                </span>
+
+
+            </button>
+
+
+        </main>
+
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- HANDS-FREE VOICE INDICATOR -->
+    <!-- ================================= -->
+
+    <button
+        id="statusIndicator"
+        class="voice-status-indicator"
+        onclick="togglePageVoiceAssistant()"
+        title="Voice Assistant">
+        🎙️️
+    </button>
+
+
+
+    <!-- ================================= -->
+    <!-- TESSERACT OCR LIBRARY -->
+    <!-- ================================= -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js">
+    </script>
+
+
+
+    <!-- ================================= -->
+    <!-- DOCUMENT SUMMARY JAVASCRIPT -->
+    <!-- ================================= -->
+
+    <script src="/js/doc2.js"></script>
+
+
+
+    <!-- ================================= -->
+    <!-- INLINE VOICE ASSISTANCE CONTROLLER -->
+    <!-- ================================= -->
+
+    <script>
+        let isDocListening = false;
+        let docRecognition = null;
+
+        // Initialize Web Speech API
+        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            docRecognition = new SpeechRecognition();
+            docRecognition.continuous = true;
+            docRecognition.interimResults = false;
+            docRecognition.lang = 'en-US';
+
+            docRecognition.onresult = function(event) {
+                const current = event.resultIndex;
+                const command = event.results[current][0].transcript.toLowerCase().trim();
+                console.log("Voice Command Received:", command);
+                processDocumentVoiceCommand(command);
+            };
+
+            docRecognition.onend = function() {
+                if (isDocListening) {
+                    try { docRecognition.start(); } catch (e) {}
+                }
+            };
+        }
+
+        function togglePageVoiceAssistant() {
+            const indicator = document.getElementById('statusIndicator');
+            if (!docRecognition) {
+                alert("Voice recognition is not supported in this browser.");
+                return;
+            }
+
+            if (isDocListening) {
+                isDocListening = false;
+                docRecognition.stop();
+                indicator.classList.remove('listening');
+                speakPhrase("Voice recognition deactivated.");
+            } else {
+                isDocListening = true;
+                docRecognition.start();
+                indicator.classList.add('listening');
+                speakPhrase("Document voice control activated. You can say scan, upload, read text, or read summary.");
+            }
+        }
+
+        function processDocumentVoiceCommand(command) {
+            if (command.includes('scan') || command.includes('camera')) {
+                speakPhrase("Opening camera to scan document.");
+                const camBtn = document.getElementById('summaryCameraBtn');
+                const camInput = document.getElementById('summaryCameraInput');
+                if (camBtn) camBtn.click();
+                else if (camInput) camInput.click();
+            } 
+            else if (command.includes('upload') || command.includes('gallery')) {
+                speakPhrase("Opening gallery.");
+                const galBtn = document.getElementById('summaryGalleryBtn');
+                const galInput = document.getElementById('summaryGalleryInput');
+                if (galBtn) galBtn.click();
+                else if (galInput) galInput.click();
+            } 
+            else if (command.includes('read text') || command.includes('extracted text') || command.includes('read document')) {
+                speakTextContent('extractedSummaryText');
+            } 
+            else if (command.includes('summary') || command.includes('read summary') || command.includes('listen summary')) {
+                speakTextContent('summaryText');
+            } 
+            else if (command.includes('stop')) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function speakPhrase(text) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            const langSelect = document.getElementById('languageSelect');
+            if (langSelect) utterance.lang = langSelect.value;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function speakTextContent(elementId) {
+            window.speechSynthesis.cancel();
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            const text = element.innerText || element.textContent;
+            if (!text || text.trim() === "") return;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            const langSelect = document.getElementById('languageSelect');
+            if (langSelect) utterance.lang = langSelect.value;
+
+            const indicator = document.getElementById('statusIndicator');
+            if (indicator) indicator.classList.add('speaking');
+
+            utterance.onend = function() {
+                if (indicator) indicator.classList.remove('speaking');
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Attach Click Listeners to Speaker Icons & Buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const extractedSpeaker = document.getElementById('extractedSpeakerBtn');
+            const boxSpeaker = document.getElementById('boxSpeakerBtn');
+            const listenBtn = document.getElementById('listenBtn');
+            const galInput = document.getElementById('summaryGalleryInput');
+            const camInput = document.getElementById('summaryCameraInput');
+
+            if (extractedSpeaker) {
+                extractedSpeaker.addEventListener('click', function() {
+                    speakTextContent('extractedSummaryText');
+                });
+            }
+
+            if (boxSpeaker) {
+                boxSpeaker.addEventListener('click', function() {
+                    speakTextContent('summaryText');
+                });
+            }
+
+            if (listenBtn) {
+                listenBtn.addEventListener('click', function() {
+                    speakTextContent('summaryText');
+                });
+            }
+
+            // Monitor extracted text changes to auto-speak
+            const observerTarget = document.getElementById('extractedSummaryText');
+            if (observerTarget) {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        const newText = observerTarget.innerText.trim();
+                        if (newText && !newText.includes("Scan or upload") && !newText.includes("Extracting")) {
+                            speakPhrase("Document processed. Reading extracted text now.");
+                            setTimeout(() => speakTextContent('extractedSummaryText'), 1500);
+                        }
+                    });
+                });
+                observer.observe(observerTarget, { childList: true, characterData: true, subtree: true });
+            }
+        });
+    </script>
+
+
+    <!-- ================================= -->
+    <!-- COMMON JAVASCRIPT -->
+    <!-- ================================= -->
+
+    <script src="/js/common.js"></script>
+
+
+    <!-- ================================= -->
+    <!-- UNIVERSAL VOICE ASSISTANT SCRIPT -->
+    <!-- ================================= -->
+
+    <script src="/js/global-voice.js"></script>
+
+
+</body>
+
+</html>
